@@ -11,16 +11,15 @@ class Blog extends Model
 
     protected $fillable = [
         'title',
-        'type',
+        'category',
         'description',
         'summary',
         'content',
-        'category',
         'tag',
         'user_id',
     ];
 
-    public function user(){
+    public function users(){
         return $this->belongsto(User::class);
     }
 }

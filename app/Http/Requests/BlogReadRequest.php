@@ -24,7 +24,7 @@ class BlogReadRequest extends FormRequest
     public function rules()
     {
         return [
-            'id' => 'required|integer|products,id'
+            'id' => 'required|integer|exists:blogs,id'
         ];
     }
 }

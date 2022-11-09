@@ -2,51 +2,41 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\BlogCreateRequest;
+use App\Http\Requests\BlogDeleteRequest;
+use App\Http\Requests\BlogReadRequest;
+use App\Http\Requests\BlogUpdateRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
+use Illuminate\Support\Carbon;
 
 use App\Models\Blog;
 
 class BlogController extends Controller{
     
-    public function create(Request $request)
+    public function create(BlogCreateRequest $request)
     {
-        /* A method that I created in the `Request` class. It is used to validate the request. */
-		$validated = $request->safe()->all();
-        /* Used to check if the request was successful or not. */
-         $status = 0;
-         //Checking if the income has image
-         if($request->hasFile('images')){
-             $file = $request->file('image');
-             $filename =  Str::random(15) . time() . '.' . $file->getClientOriginalExtension();
-             $file-> move(public_path('public/Image'), $filename);
-             $filename;
-         }
+		$validated = $request->all();
+
+        $status = 0;
  
-         /* Adding the image and seller_id to the validated array. */
-         // $validated["images"] = $filename;
-         $validated["seller_id"] = auth()->user()->id;
-         /* Creating a new product. */
-         
-         $data = Blog::create($validated);
+        $data = Blog::create($validated);
            
-         if($data){
-             $status = 1;
-         }
-         return response()->json([
-             'data' => $data,
-             'status' => $status
-         ]);
+        if($data) $status = 1;
+        return response()->json([
+            'data' => $data,
+            'status' => $status
+        ]);
     }
 
-    public function read(Request $request){
-        /* Validating the request. */
-		$validated = $request->safe()->only(["id"]);
-		/* Used to check if the request was successful or not. */
-		$status = 0;
-		/* Getting the product based on the ID requested. */
-        $data = Blog::find($validated['id']);
+    public function read(BlogReadRequest $request){
 
+        $validated = $request->only(["id"]);
+
+		$status = 0;
+
+        $data = Blog::find($validated['id']);
+        
 		if($data) $status = 1;
 		return response()->json([
 			"data" => $data,
@@ -55,29 +45,55 @@ class BlogController extends Controller{
     }
 
     public function list(Request $request){
-        /* Validating the request. */
-		$validated = $request->safe()->only(["id"]);
-		/* Used to check if the request was successful or not. */
-		$status = 0;
-		/* Getting the product based on the ID requested. */
-        $data = Blog::find($validated['id']);
-
-		if($data) $status = 1;
-		return response()->json([
-			"data" => $data,
-			"status" => $status
-		]);
-    }
-
-    public function update(Request $request, $id){
-        /* A method that I created in the `Request` class. It is used to validate the request. */
-        $validated = $request->safe()->all();
-		/* Used to check if the request was successful or not. */
+        $search_columns  = ['name', 'type'];
+        $limit = ($request->limit) ?  $request->limit : 50;
+        $sort_column = ( $request->sort_column) ?  $request->sort_column : 'id';
+        $sort_order = ( $request->sort_order) ?  $request->sort_order : 'desc';
         $status = 0;
-		/* Updating the product based on the ID requested. */
+        $data = new Blog();
+        /* Searching for the value of the request. */
+        if(isset($request->search)) {
+            $key = $request->search;
+            /* Searching for the key in the columns. */
+            $data = $data->where(function ($q) use ($search_columns, $key) {
+                foreach ($search_columns as $column) {
+                    /* Searching for the key in the column. */
+                    $q->orWhere($column, 'LIKE', '%'.$key.'%');
+                }
+            });
+        }
+        /* Filtering the data by date. */
+        if($request->from && $request->to){
+            $data = $data->whereBetween('created_at', [
+                Carbon::parse($request->from)->format('Y-m-d H:i:s'),
+                Carbon::parse($request->to)->format('Y-m-d H:i:s')
+                ]);
+        }
+        $data = $data->orderBy($sort_column, $sort_order)->paginate($limit);
+        if($data){
+            $status = 1;
+            return response()->json([
+                    'data' => $data,
+                    'status' => $status
+                ]);
+        } else {
+            return response()->json([
+                'data' => $data,
+                'status' => $status
+            ]);
+        }
+    } /* END */
+
+    public function update(BlogUpdateRequest $request){
+
+        $validated = $request->safe()->all();
+
+        $status = 0;
+
 		$data = Blog::find($validated['id']);
+
 		$data->update($validated);
-		/* Checking if the data is available or not. If it is available, it will return the data and a status of 1. If it is not available, it will return a message and a status of 0. */
+
 		if($data) $status = 1;
 		return response()->json([
 			'data' => $data,
@@ -85,15 +101,13 @@ class BlogController extends Controller{
 		]);
     }
 
-    public function delete(Request $request, $id){
-        /* Validating the request. */
+    public function delete(BlogDeleteRequest $request){
         $validated = $request->safe()->only(['id']);
-		/* Used to check if the request was successful or not. */
+
         $status = 0;
-        /* Deleting the product based on the ID requested. */
+
         $data = Blog::whereId($validated['id'])->delete();
 
-		// If no product found
 		if($data) $status = 1;
 
         return response()->json([

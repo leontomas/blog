@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class BlogDeleteRequest extends FormRequest
+class UserUpdateRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -24,7 +24,12 @@ class BlogDeleteRequest extends FormRequest
     public function rules()
     {
         return [
-            'id' => 'required|integer|exists:blogs,id'
+            
+            'id' => 'required|integer',
+            'first_name' => 'string|max:50',
+            'last_name' => 'string|max:50',
+            'username' => 'max:50|unique:users,username,'.$this->user()->id,
+
         ];
     }
 }
