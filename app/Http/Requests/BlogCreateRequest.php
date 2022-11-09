@@ -13,7 +13,7 @@ class BlogCreateRequest extends FormRequest
      */
     public function authorize()
     {
-        return false;
+        return true;
     }
 
     /**
@@ -24,7 +24,13 @@ class BlogCreateRequest extends FormRequest
     public function rules()
     {
         return [
-            //
+            'title' => 'required|string|max:50',
+            'category' => 'required|string|max:50',
+            'description' => 'nullable|string|max:250',
+            'summary' => 'required|string|max:250',
+            'content' => 'required|string|max:250',
+            'tag' => 'required|string|max:50',
+            'user_id' => 'required|integer|users,id'
         ];
     }
 }

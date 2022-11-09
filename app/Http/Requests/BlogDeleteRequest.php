@@ -13,7 +13,7 @@ class BlogDeleteRequest extends FormRequest
      */
     public function authorize()
     {
-        return false;
+        return true;
     }
 
     /**
@@ -24,7 +24,7 @@ class BlogDeleteRequest extends FormRequest
     public function rules()
     {
         return [
-            //
+            'id' => 'required|integer|products,id'
         ];
     }
 }

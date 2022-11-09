@@ -3,72 +3,70 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
 
-class UserController extends Controller
-{
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function index()
-    {
-        //
+use App\Models\User;
+
+class UserController extends Controller{
+    
+    public function create(Request $request){
+        $validated = $request->safe()->all();
+
+        $status = 0;
+
+        $validated['password'] = Hash::make($validated['password']);
+
+        //create the user with validated input
+        $data = User::create($validated);
+
+        if($data) $status = 1;
+
+        return response()->json([
+            "status" => $status,
+            "data" => $data
+        ]);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
+    public function read(Request $request){
+        //get all validated incoming request
+        $validated = $request->safe()->only(['id']);
+
+        $status = 0;
+
+        //find user
+        $data = User::find($validated['id']);
+
+        if($data) $status = 1;
+
+        //return the user details
+        return response()->json([
+            'data' => $data,
+            'status' => $status,
+        ]);
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
-    {
-        //
-    }
+    public function update(Request $request, $id){
+        //get all validated incoming request
+        $validated = $request->safe()->all();
+        
+        //look for the user based on the id
+        $data = User::find($validated['id']);
+        
+        if($data) $status = 1;
+        
+        try {
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
-    {
-        //
-    }
+            $data->update($validated);
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        //
-    }
+        } catch (\Throwable $th) {
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, $id)
-    {
-        //
+            $status = 0;
+        }
+
+        return response()->json([
+            'data' => $data,
+            'status' => $status
+        ]);
     }
 
     /**
@@ -77,8 +75,21 @@ class UserController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
-    {
-        //
+    public function delete(Request $request){
+        //get all validated incoming request
+        $validated = $request->safe()->only(['id']);
+        
+        $status = 0;
+
+        //find the user based on validated value then delete
+        $data = User::whereId($validated)->delete();
+        
+        if($data) $status = 1;
+        
+        //return a json message
+        return response()->json([
+            "message" => "User deleted",
+            "status" => $status
+        ]);
     }
 }
