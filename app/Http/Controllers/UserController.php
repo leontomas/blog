@@ -18,7 +18,7 @@ class UserController extends Controller{
 
         //create the user with validated input
         $data = User::create($validated);
-
+ 
         if($data) $status = 1;
 
         return response()->json([

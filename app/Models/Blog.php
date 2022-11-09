@@ -19,4 +19,8 @@ class Blog extends Model
         'tag',
         'user_id',
     ];
+
+    public function user(){
+        return $this->belongsto(User::class);
+    }
 }
