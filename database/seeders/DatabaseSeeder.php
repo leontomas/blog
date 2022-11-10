@@ -77,6 +77,7 @@ class DatabaseSeeder extends Seeder
             'created_at'=> Carbon::now(),
             'updated_at'=> Carbon::now()
         ]);
+        // 
         DB::table('blogs')->insert([
             'title'=>'Be Like a River',
             'category'=> 'Book and writing',
@@ -111,6 +112,7 @@ class DatabaseSeeder extends Seeder
             'created_at'=> Carbon::now(),
             'updated_at'=> Carbon::now()
         ]);
+        
         DB::table('blogs')->insert([
             'title'=>'Test Update2',
             'category'=> 'Test Blog',
@@ -121,6 +123,7 @@ class DatabaseSeeder extends Seeder
             'created_at'=> Carbon::now(),
             'updated_at'=> Carbon::now()
         ]);
+
         DB::table('blogs')->insert([
             'title'=>'Test Delete1',
             'category'=> 'Test Blog',
@@ -131,6 +134,7 @@ class DatabaseSeeder extends Seeder
             'created_at'=> Carbon::now(),
             'updated_at'=> Carbon::now()
         ]);
+
         DB::table('blogs')->insert([
             'title'=>'Test Delete2',
             'category'=> 'Test Blog',

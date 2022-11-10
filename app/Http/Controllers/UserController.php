@@ -137,39 +137,36 @@ class UserController extends Controller{
     }
 
     public function login(UserLoginRequest $request){
-        /* Getting the validated data from the request. */
         $validated = $request->safe()->only(['username', 'password']);
 
-        /* Getting the first customer user with the username from the request. */
-        $customer = User::where('username', $validated['username'])->first();
+        $author = User::where('username', $validated['username'])->first();
 
-        /* Checking if the user exists, if the password is correct, if the pin is correct, if the status is active, if the status is blocked. */
-        if ( !$customer || !Hash::check($validated['password'], $customer->password) ) {
-               
+        if ( !$author || !Hash::check($validated['password'], $author->password) ) {
+
             /* Returning a 401 status code with a message. */
             return response()->json([
                 'message' => 'Invalid login details',
             ], 401);
 
         }
-
         /* Deleting all the tokens for the user. */
-        $customer->tokens()->delete();
+        $author->tokens()->delete();
 
         /* Creating a token for the user. */
-        $token = $customer->createToken('auth_token')->plainTextToken;
-
+        // $token = $author->createToken('auth_token')->plainTextToken;
+        $token = $author->createToken('auth_token')->plainTextToken;
         /* Returning the token to the user. */
         return response()->json([
             'access_token'  => $token,
             'token_type'    => 'Bearer',
         ]);
+        
     }/* END */
 
     public function logout(){
         
         /* Deleting all the tokens for the user. */
-        auth()->user()->tokens()->delete();
+        auth('sanctum')->user()->tokens()->delete();
 
        /* return a message that the user is logged out*/
        return response()->json([

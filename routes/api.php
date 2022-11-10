@@ -16,12 +16,11 @@ Route::group(['middleware' => ['guest']], function(){
 
 });
 
-/* 
-Route::group(['prefix' => 'admin', 'middleware' => ['auth:admin', 'admin']], function(){
- */
-Route::group(['prefix' => 'user'], function(){
+// Route::group(['prefix' => 'user'], function(){
+Route::group(['prefix' => 'user', 'middleware' => ['auth:user', 'user']], function(){
 
 	Route::post('/logout', [UserController::class, 'logout']);
+
     Route::post('/read', [UserController::class, 'read']);
     Route::post('/list', [UserController::class, 'list']);
     Route::post('/update', [UserController::class, 'update']);
