@@ -3,9 +3,10 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Http\Requests\UserCreateRequests;
-use App\Http\Requests\UserDeleteRequests;
-use App\Http\Requests\UserLoginRequests;
+use App\Http\Requests\UserCreateRequest;
+use App\Http\Requests\UserDeleteRequest;
+use App\Http\Requests\UserLoginRequest;
+use App\Http\Requests\UserUpdateRequest;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Carbon;
 use App\Models\User;
@@ -92,7 +93,7 @@ class UserController extends Controller{
         }
     } /* END */
 
-    public function update(Request $request, $id){
+    public function update(UserUpdateRequest $request){
         //get all validated incoming request
         $validated = $request->all();
         
@@ -135,7 +136,7 @@ class UserController extends Controller{
         ]);
     }
 
-    public function login(Request $request){
+    public function login(UserLoginRequest $request){
         /* Getting the validated data from the request. */
         $validated = $request->safe()->only(['username', 'password']);
 
