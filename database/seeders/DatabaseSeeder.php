@@ -26,6 +26,7 @@ class DatabaseSeeder extends Seeder
             'created_at'=> Carbon::now(),
             'updated_at'=> Carbon::now()
         ]);
+/* 
         // author
         DB::table('users')->insert([
             'username'=>'pcoelho',
@@ -59,6 +60,7 @@ class DatabaseSeeder extends Seeder
             'created_at'=> Carbon::now(),
             'updated_at'=> Carbon::now()
         ]);
+*/
         // blog post
         DB::table('blogs')->insert([
             'title'=>'MY WRITING TIPS',
