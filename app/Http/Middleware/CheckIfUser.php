@@ -22,6 +22,6 @@ class CheckIfUser
             return $next($request);
         }
 
-        return response()->json('Your are not an author');
+        return response()->json("You're not an author");
     }
 }

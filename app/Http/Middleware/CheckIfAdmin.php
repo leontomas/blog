@@ -22,6 +22,6 @@ class CheckIfAdmin
             return $next($request);
         }
 
-        return response()->json('Your are not an admin');
+        return response()->json("You're not an admin");
     }
 }
