@@ -17,7 +17,7 @@ class CheckIfUser
      */
     public function handle(Request $request, Closure $next)
     {   
-        if (Auth::guard('user')->check()) {
+        if (Auth::guard('author')->check()) {
 
             return $next($request);
         }

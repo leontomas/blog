@@ -38,16 +38,16 @@ return [
     'guards' => [
         'web' => [
             'driver' => 'session',
-            'provider' => 'users',
+            'provider' => 'authors',
         ],
-        'user' => [
+        'author' => [
             'driver' => 'sanctum',
-            'provider' => 'users',
+            'provider' => 'authors',
         ],
 
-        'admin' => [
+        'administrator' => [
             'driver' => 'sanctum',
-            'provider' => 'admins',
+            'provider' => 'administrators',
         ],
 
     ],
@@ -70,14 +70,14 @@ return [
     */
 
     'providers' => [
-        'users' => [
+        'authors' => [
             'driver' => 'eloquent',
             'model' => App\Models\User::class,
         ],
 
-        'admins' => [
+        'administrators' => [
             'driver' => 'eloquent',
-            'model' => App\Models\Admin::class,
+            'model' => App\Models\User::class,
         ],
     ],
 

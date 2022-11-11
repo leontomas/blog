@@ -17,7 +17,7 @@ class CheckIfAdmin
      */
     public function handle(Request $request, Closure $next)
     {
-        if (Auth::guard('admin')->check()) {
+        if (Auth::guard('administrator')->check()) {
 
             return $next($request);
         }
